@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://nammapashu.co.in/sitemap.xml
