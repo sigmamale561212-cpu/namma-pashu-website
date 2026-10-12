@@ -483,3 +483,4 @@ body > .site-header{display:flex;align-items:center;justify-content:space-betwee
 
 /* prevent 6px sideways scroll from the hero phone mockup */
 body{overflow-x:clip}
+.founder-aims li.main{background:var(--green-900);color:#fff}
