@@ -274,21 +274,26 @@
   const CONTACT_EMAIL = 'founder@nammapashu.co.in';
   const ENDPOINT = '/api/pilot';
   let message = '';
-  function showStatus(kind, html) {
-    status.className = 'form-status alert alert-' + kind; status.innerHTML = html; status.focus();
+  let redrawStatus = null; // re-renders the current result box when the language changes
+  function showStatus(kind, html, quiet) {
+    status.className = 'form-status alert alert-' + kind; status.innerHTML = html;
+    if (quiet) return;
+    status.focus();
     if (!reduceMotion) status.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
-  function showReceived() {
-    showStatus('success', `<div style="display:flex;gap:12px"><svg class="icon" style="margin-top:3px"><use href="#i-check-circle"/></svg><div><b>${lang === 'kn' ? 'ಧನ್ಯವಾದಗಳು! ನಿಮ್ಮ ವಿವರಗಳು ತಲುಪಿವೆ.' : 'Thank you! Your details have been received.'}</b><br>${lang === 'kn' ? 'ನಾವು ನಿಮ್ಮ ಮೊಬೈಲ್ ಸಂಖ್ಯೆಗೆ ಸಂಪರ್ಕಿಸಬಹುದು. ಆಸಕ್ತಿ ತಿಳಿಸಿರುವುದು ಪೈಲಟ್ ಪ್ರವೇಶದ ಖಾತರಿಯಲ್ಲ.' : 'We may contact you on your mobile number. Registering interest does not guarantee a place in the pilot.'}</div></div>`);
+  function showReceived(quiet) {
+    redrawStatus = showReceived;
+    showStatus('success', `<div style="display:flex;gap:12px"><svg class="icon" style="margin-top:3px"><use href="#i-check-circle"/></svg><div><b>${lang === 'kn' ? 'ಧನ್ಯವಾದಗಳು! ನಿಮ್ಮ ವಿವರಗಳು ತಲುಪಿವೆ.' : 'Thank you! Your details have been received.'}</b><br>${lang === 'kn' ? 'ನಾವು ನಿಮ್ಮ ಮೊಬೈಲ್ ಸಂಖ್ಯೆಗೆ ಸಂಪರ್ಕಿಸಬಹುದು. ಆಸಕ್ತಿ ತಿಳಿಸಿರುವುದು ಪೈಲಟ್ ಪ್ರವೇಶದ ಖಾತರಿಯಲ್ಲ.' : 'We may contact you on your mobile number. Registering interest does not guarantee a place in the pilot.'}</div></div>`, quiet);
   }
-  function showFallback() {
+  function showFallback(quiet) {
+    redrawStatus = showFallback;
     const mail = 'mailto:' + CONTACT_EMAIL + '?subject=' + encodeURIComponent('Namma Pashu pilot interest') + '&body=' + encodeURIComponent(message);
     showStatus('error', `
       <div style="display:flex;gap:12px"><svg class="icon" style="margin-top:3px"><use href="#i-alert"/></svg><div><b>${lang === 'kn' ? 'ವಿವರಗಳನ್ನು ಕಳುಹಿಸಲು ಆಗಲಿಲ್ಲ' : 'We could not send your details'}</b><br>${lang === 'kn' ? 'ದಯವಿಟ್ಟು ಸ್ವಲ್ಪ ಸಮಯದ ನಂತರ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ, ಅಥವಾ ಕೆಳಗಿನ ಸಂದೇಶವನ್ನು ' + CONTACT_EMAIL + ' ಗೆ ನೀವೇ ಕಳುಹಿಸಿ. ನಿಮ್ಮ ವಿವರಗಳು ಇನ್ನೂ ಕಳುಹಿಸಲ್ಪಟ್ಟಿಲ್ಲ.' : 'Please try again in a moment, or send the message below to ' + CONTACT_EMAIL + ' yourself. Your details have not been sent yet.'}</div></div>
       <div class="status-actions">
         <a class="button" href="${mail}">${lang === 'kn' ? 'ಇಮೇಲ್ ಮೂಲಕ ಕಳುಹಿಸಿ' : 'Send by email'}</a>
         <button type="button" class="button button-outline" id="copyDetails"><svg class="icon"><use href="#i-copy"/></svg>${lang === 'kn' ? 'ನಕಲಿಸಿ' : 'Copy'}</button>
-      </div>`);
+      </div>`, quiet);
   }
   status.addEventListener('click', async e => {
     const btn = e.target.closest('#copyDetails'); if (!btn) return;
@@ -298,7 +303,7 @@
   function setLoading(on) { form.classList.toggle('is-loading', on); submitBtn.disabled = on; submitBtn.setAttribute('aria-busy', String(on)); }
 
   form.addEventListener('submit', async e => {
-    e.preventDefault(); status.className = 'form-status'; status.innerHTML = '';
+    e.preventDefault(); status.className = 'form-status'; status.innerHTML = ''; redrawStatus = null;
     if (!validate()) return;
     const payload = {
       name: $('#fullName').value.trim(), phone: $('#phone').value.trim(), district: $('#district').value, taluk: $('#taluk').value.trim(),
@@ -321,6 +326,12 @@
       } else showFallback();
     } catch { showFallback(); }
     finally { setLoading(false); }
+  });
+
+  // Keep the result box and any field errors in the visitor's current language.
+  rerenderHooks.push(() => {
+    if (redrawStatus) redrawStatus(true);
+    Object.keys(MSG).forEach(k => { if ($('#err-' + k).closest('.field').classList.contains('is-invalid')) setError(k, true); });
   });
 
   /* Design-review helper: ?formstate=loading | success | error | fallback  (static previews of the form states; no data is sent) */
