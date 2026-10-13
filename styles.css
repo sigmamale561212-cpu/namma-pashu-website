@@ -570,3 +570,11 @@ body{overflow-x:clip}
 @media (prefers-reduced-motion:reduce){.phone-frame{animation:none}}
 
 @media (max-width:420px){.search-field,.selects,.select-field{min-width:0;max-width:100%}.market-tools,.filters{max-width:100%}}
+
+/* --- WhatsApp --- */
+.fab-wa{position:fixed;right:16px;bottom:max(16px,env(safe-area-inset-bottom));z-index:41;width:56px;height:56px;border-radius:50%;display:grid;place-items:center;background:#1F8A4C;color:#fff;box-shadow:0 12px 24px -8px rgba(23,107,58,.7);transition:transform .2s var(--ease),background .2s}
+.fab-wa:hover{background:#176B3A;transform:translateY(-3px)}
+.fab-wa .icon{width:28px;height:28px;fill:none;stroke:#fff}
+.pilot-copy .button-whatsapp{margin-top:6px;align-self:flex-start}
+@media (max-width:640px){.fab-join{right:84px}}
+@media (min-width:641px){.fab-wa{right:24px;bottom:24px}}

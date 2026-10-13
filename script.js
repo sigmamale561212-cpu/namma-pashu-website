@@ -93,6 +93,13 @@
   } else revealEls.forEach(el => el.classList.add('is-visible'));
 
 
+  /* ---------- WhatsApp links: pre-filled message in the page language ---------- */
+  const setWa = () => {
+    const t = lang === 'en' ? 'Hello Namma Pashu, I would like to know more.' : 'ನಮಸ್ಕಾರ, ನಮ್ಮ ಪಶು ಬಗ್ಗೆ ಹೆಚ್ಚು ತಿಳಿಯಲು ಬಯಸುತ್ತೇನೆ.';
+    $$('.wa-link').forEach(a => { a.href = 'https://wa.me/919900464353?text=' + encodeURIComponent(t); });
+  };
+  rerenderHooks.push(setWa); setWa();
+
   /* ---------- Floating "Join the pilot" button (phones only, via CSS) ---------- */
   (function () {
     const fab = $('#fabJoin'), pilot = $('#pilot'), hero = $('.hero');
