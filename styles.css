@@ -484,3 +484,89 @@ body > .site-header{display:flex;align-items:center;justify-content:space-betwee
 /* prevent 6px sideways scroll from the hero phone mockup */
 body{overflow-x:clip}
 .founder-aims li.main{background:var(--green-900);color:#fff}
+
+/* ================= UI refinement pass ================= */
+:root{--ink-2:#47594D}
+
+/* --- Hero: phone sits beside the photo, no longer covers the cow --- */
+@media (min-width:641px){
+  .hero-visual{padding-right:92px}
+  .phone{right:0;bottom:-4px;width:152px}
+  .hero-photo{aspect-ratio:1/1;max-height:560px;width:100%}
+  .hero-photo img{object-position:42% 40%}
+}
+.phone-frame{animation:floaty 7s ease-in-out infinite}
+@keyframes floaty{0%,100%{transform:rotate(3deg) translateY(0)}50%{transform:rotate(3deg) translateY(-6px)}}
+.hero-copy>*{animation:rise .7s var(--ease) both}
+.hero-copy>*:nth-child(2){animation-delay:.08s}.hero-copy>*:nth-child(3){animation-delay:.16s}
+.hero-copy>*:nth-child(4){animation-delay:.24s}.hero-copy>*:nth-child(5){animation-delay:.32s}
+.hero-photo{animation:rise .8s var(--ease) .1s both}
+.hero-sample{animation:rise .8s var(--ease) .35s both}
+
+/* --- Larger, clearer small text --- */
+.badge,.sample-badge{font-size:13px}
+.brand-copy small{font-size:12px}
+.hero-sample small,.animal-stats dt,.animal-price small,.facts dt,.fineprint{font-size:13px}
+.phone figcaption{font-size:12px;white-space:nowrap}
+@media (min-width:641px){.phone{text-align:right}}
+.breed small,.err{font-size:14px}
+.about-copy p.muted,.cta-card p,.pilot-points li{font-size:16px}
+.hero-note{font-size:15px}
+
+/* --- About: use the full width on desktop --- */
+.about-head,.about-body{display:flex;flex-direction:column;align-items:flex-start;gap:20px}
+@media (min-width:921px){
+  .about-copy{max-width:none;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:clamp(32px,5vw,80px);align-items:start}
+}
+
+/* --- Pilot form: steps fill the left panel --- */
+.pilot-steps{margin-top:12px;width:100%;max-width:460px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.16);border-radius:var(--r-lg);padding:22px 22px 8px}
+.pilot-steps h3{color:#fff;font-size:17px;margin-bottom:14px}
+.pilot-steps ol{display:flex;flex-direction:column}
+.pilot-steps li{display:flex;gap:14px;align-items:flex-start;padding-bottom:18px;position:relative}
+.pilot-steps li:not(:last-child)::before{content:"";position:absolute;left:15px;top:34px;bottom:2px;border-left:2px dashed rgba(242,178,124,.55)}
+.pilot-steps .n{flex:none;width:32px;height:32px;border-radius:50%;background:#F2B27C;color:#0C3925;font-weight:800;display:grid;place-items:center;font-family:var(--font-en)}
+.pilot-steps b{display:block;color:#fff;font-size:16px;line-height:1.5}
+.pilot-steps small{display:block;color:#CFE3D6;font-size:14px;line-height:1.55}
+
+/* --- Marketplace "join" card (replaces the empty dashed box) --- */
+.cta-card{background:linear-gradient(160deg,var(--green-900),#145C38);border:0;color:#fff;box-shadow:var(--sh-2);align-items:flex-start}
+.cta-card h3{color:#fff}
+.cta-card p{color:#D3E6D9}
+.cta-card .ico{background:rgba(255,255,255,.14);color:#F2B27C}
+.cta-card .button{margin-top:6px}
+
+/* --- Breed photo colour match --- */
+.breed img[src*="malnad"]{filter:saturate(1.12) contrast(1.08)}
+
+/* --- Floating join button (phones) --- */
+.fab-join{display:none}
+@media (max-width:640px){
+  .fab-join{display:inline-flex;align-items:center;gap:8px;position:fixed;right:16px;bottom:max(16px,env(safe-area-inset-bottom));z-index:40;min-height:52px;padding:0 20px;border-radius:99px;background:var(--orange);color:#fff;font-weight:700;box-shadow:0 12px 24px -8px rgba(179,93,31,.7);opacity:0;transform:translateY(24px) scale(.96);pointer-events:none;transition:opacity .3s var(--ease),transform .3s var(--ease)}
+  .fab-join .icon{width:18px;height:18px}
+  .fab-join.is-on{opacity:1;transform:none;pointer-events:auto}
+  .back-top{bottom:84px}
+}
+
+/* --- Staggered reveal for grids --- */
+.reveal.step:nth-child(2),.reveal.benefit:nth-child(2),.reveal.service:nth-child(2){transition-delay:.08s}
+.reveal.step:nth-child(3),.reveal.benefit:nth-child(3),.reveal.service:nth-child(3){transition-delay:.16s}
+.reveal.step:nth-child(4),.reveal.service:nth-child(4){transition-delay:.24s}
+.reveal.service:nth-child(5){transition-delay:.32s}.reveal.service:nth-child(6){transition-delay:.4s}
+
+/* --- Mobile: tighter spacing, comfortable sizes --- */
+@media (max-width:640px){
+  .section{padding-block:48px}
+  .section-head{margin-bottom:24px}
+  .hero + .section{padding-top:44px}
+  .founder-card,.pilot-steps{padding-inline:18px}
+  .pilot-form{padding:22px 18px}
+}
+/* --- Tablet --- */
+@media (min-width:641px) and (max-width:920px){
+  .pilot-steps{max-width:none}
+  .hero-visual{max-width:600px}
+}
+@media (prefers-reduced-motion:reduce){.phone-frame{animation:none}}
+
+@media (max-width:420px){.search-field,.selects,.select-field{min-width:0;max-width:100%}.market-tools,.filters{max-width:100%}}

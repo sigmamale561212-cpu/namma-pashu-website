@@ -92,6 +92,17 @@
     revealEls.forEach(el => io.observe(el));
   } else revealEls.forEach(el => el.classList.add('is-visible'));
 
+
+  /* ---------- Floating "Join the pilot" button (phones only, via CSS) ---------- */
+  (function () {
+    const fab = $('#fabJoin'), pilot = $('#pilot'), hero = $('.hero');
+    if (!fab || !pilot || !hero || !('IntersectionObserver' in window)) return;
+    let heroOut = false, pilotIn = false;
+    const sync = () => { const show = heroOut && !pilotIn; fab.classList.toggle('is-on', show); fab.setAttribute('aria-hidden', show ? 'false' : 'true'); fab.tabIndex = show ? 0 : -1; };
+    new IntersectionObserver(es => { heroOut = !es[0].isIntersecting; sync(); }).observe(hero);
+    new IntersectionObserver(es => { pilotIn = es[0].isIntersecting; sync(); }).observe(pilot);
+  })();
+
   /* ---------- Marketplace ---------- */
   const grid = $('#animalGrid'), mSearch = $('#mSearch'), mDistrict = $('#mDistrict'), mTaluk = $('#mTaluk'), mSort = $('#mSort');
   const count = $('#resultCount'), empty = $('#marketEmpty');
@@ -153,9 +164,9 @@
       </article>`).join('');
     if (list.length) grid.insertAdjacentHTML('beforeend', `
       <aside class="cta-card" style="animation-delay:${list.length * 60}ms"><span class="ico ico-orange"><svg class="icon"><use href="#i-sprout"/></svg></span>
-        <h3>${lang === 'kn' ? 'ನಿಮ್ಮ ಪಶುವಿನ ಪಟ್ಟಿ ಇಲ್ಲಿ ಕಾಣಿಸಬಹುದು' : 'Your listing could appear here'}</h3>
+        <h3>${lang === 'kn' ? 'ನಿಮ್ಮ ಪಶು ಇಲ್ಲಿ ಇರಬಹುದು' : 'Your animal could be here'}</h3>
         <p>${lang === 'kn' ? 'ಇವು ಮಾದರಿಗಳು ಮಾತ್ರ. ನಿಜವಾದ ಪಟ್ಟಿಗಳು ಪೈಲಟ್ ಆರಂಭವಾದ ನಂತರ ಮಾತ್ರ.' : 'These are samples only. Real listings will exist only after the pilot begins.'}</p>
-        <a class="text-link" href="#pilot"><span>${lang === 'kn' ? 'ಪೈಲಟ್‌ಗೆ ಆಸಕ್ತಿ ತಿಳಿಸಿ' : 'Register pilot interest'}</span><svg class="icon"><use href="#i-arrow-right"/></svg></a>
+        <a class="button button-orange" href="#pilot"><span>${lang === 'kn' ? 'ಪೈಲಟ್‌ಗೆ ಆಸಕ್ತಿ ತಿಳಿಸಿ' : 'Register pilot interest'}</span><svg class="icon"><use href="#i-arrow-right"/></svg></a>
       </aside>`);
     empty.classList.toggle('hidden', list.length !== 0);
     grid.classList.toggle('hidden', list.length === 0);
