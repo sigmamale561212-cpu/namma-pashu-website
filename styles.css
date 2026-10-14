@@ -592,3 +592,10 @@ body{overflow-x:clip}
 /* --- Remove the big empty gap under the breeds card --- */
 #about{padding-bottom:clamp(24px,3vw,40px)}
 #founder{padding-top:clamp(24px,3vw,40px)}
+
+/* --- Features (15 cards) --- */
+.service ul{display:flex;flex-direction:column;gap:8px;flex:1;width:100%}
+.service li{position:relative;padding-left:18px;font-size:15px;line-height:1.6;color:var(--ink-2)}
+.service li::before{content:"";position:absolute;left:0;top:.62em;width:8px;height:8px;border-radius:50%;background:var(--orange)}
+.service h3{font-size:18px;line-height:1.4}
+.features-note{margin-top:24px}
