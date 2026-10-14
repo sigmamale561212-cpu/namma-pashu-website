@@ -100,6 +100,55 @@
   };
   rerenderHooks.push(setWa); setWa();
 
+
+  /* ---------- Breed characteristics modal ---------- */
+  const BREEDS = {
+    hallikar: { img: 'assets/hallikar-cow.webp', pos: '55% 50%', kind: ['ಹಸು · ಸ್ಥಳೀಯ ತಳಿ', 'Cattle · Indigenous breed'], name: ['ಹಳ್ಳಿಕಾರ್', 'Hallikar'],
+      region: ['ದಕ್ಷಿಣ ಕರ್ನಾಟಕ — ತುಮಕೂರು, ಮೈಸೂರು, ಮಂಡ್ಯ, ಹಾಸನ, ಕೋಲಾರ ಮತ್ತು ಬೆಂಗಳೂರು ಗ್ರಾಮಾಂತರ ಜಿಲ್ಲೆಗಳು', 'Southern Karnataka — districts such as Tumakuru, Mysuru, Mandya, Hassan, Kolar and Bengaluru Rural'],
+      look: ['ಬೂದು ಬಣ್ಣದಿಂದ ಬಿಳಿ (ಕೆಲವೊಮ್ಮೆ ಕಪ್ಪು); ಹಿಂದಕ್ಕೆ ಬಾಗಿದ ಉದ್ದ, ನೇರ ಕೊಂಬುಗಳು; ಮಧ್ಯಮ ಗಾತ್ರದ ಬಲವಾದ ದೇಹ; ಹೋರಿಗಳಿಗೆ ದೊಡ್ಡ ಡುಬ್ಬ', 'Grey to white (sometimes darker); long, upright horns curving backward; medium-sized, compact body; bulls have a prominent hump'],
+      known: ['ಉಳುಮೆ ಮತ್ತು ಗಾಡಿ ಎಳೆಯಲು ಬಳಸುವ ಸಾಂಪ್ರದಾಯಿಕ ದುಡಿಮೆ ತಳಿ; ಬಲ ಮತ್ತು ತ್ರಾಣಕ್ಕೆ ಹೆಸರುವಾಸಿ. ಹೆಚ್ಚು ಹಾಲು ಕೊಡುವ ತಳಿ ಅಲ್ಲ.', 'Traditionally a draught breed for ploughing and carting; known for strength and stamina. Not a high-milk breed.'] },
+    amrit: { img: 'assets/amrit-mahal.webp', pos: '70% 50%', kind: ['ಹಸು · ಸ್ಥಳೀಯ ತಳಿ', 'Cattle · Indigenous breed'], name: ['ಅಮೃತ್ ಮಹಲ್', 'Amrit Mahal'],
+      region: ['ಮಧ್ಯ ಮತ್ತು ದಕ್ಷಿಣ ಕರ್ನಾಟಕ — ಚಿತ್ರದುರ್ಗ, ತುಮಕೂರು, ಹಾಸನ ಮತ್ತು ಚಿಕ್ಕಮಗಳೂರು ಜಿಲ್ಲೆಗಳು', 'Central and southern Karnataka — districts such as Chitradurga, Tumakuru, Hassan and Chikkamagaluru'],
+      look: ['ತಿಳಿ ಬೂದು ಬಣ್ಣದಿಂದ ಕಡು ಬೂದು; ತುಂಬಾ ಉದ್ದ, ತುದಿ ಚೂಪಾದ ಕೊಂಬುಗಳು; ಸಪೂರ, ಚುರುಕಾದ ದೇಹ', 'Light to dark grey; very long, tapering horns; lean, athletic build'],
+      known: ['ತ್ರಾಣ ಮತ್ತು ವೇಗದ ನಡಿಗೆಗೆ ಹೆಸರಾದ ದುಡಿಮೆ ತಳಿ; ಹಿಂದೆ “ಕಾವಲ್” ಎಂಬ ಹುಲ್ಲುಗಾವಲುಗಳಲ್ಲಿ ಸಾಕಲಾಗುತ್ತಿತ್ತು.', 'A draught breed known for endurance and a fast walking pace; historically bred in grass reserves called “kavals”.'] },
+    malnad: { img: 'assets/malnad-gidda.webp', pos: '82% 55%', kind: ['ಹಸು · ಸ್ಥಳೀಯ ತಳಿ', 'Cattle · Indigenous breed'], name: ['ಮಲೆನಾಡು ಗಿಡ್ಡ', 'Malnad Gidda'],
+      region: ['ಮಲೆನಾಡು (ಪಶ್ಚಿಮ ಘಟ್ಟ) — ಶಿವಮೊಗ್ಗ, ಚಿಕ್ಕಮಗಳೂರು, ಹಾಸನ ಮತ್ತು ದಕ್ಷಿಣ ಕನ್ನಡದಂತಹ ಗುಡ್ಡಗಾಡು, ಹೆಚ್ಚು ಮಳೆ ಬೀಳುವ ಪ್ರದೇಶಗಳು', 'Malnad (Western Ghats) — hilly, high-rainfall areas such as Shivamogga, Chikkamagaluru, Hassan and Dakshina Kannada'],
+      look: ['ಗಿಡ್ಡ ಗಾತ್ರದ ಸಣ್ಣ ದನ (ಸುಮಾರು 90 ಸೆಂ.ಮೀ. ಎತ್ತರ); ಸಾಮಾನ್ಯವಾಗಿ ಕಪ್ಪು ಅಥವಾ ಕಂದು ಬಣ್ಣ', 'Small, short-statured cattle (about 90 cm at the withers); usually black to brown'],
+      known: ['ಗುಡ್ಡ, ಕಾಡು ಮೇಯುವಿಕೆಗೆ ಹೊಂದಿಕೊಂಡ ಗಟ್ಟಿಮುಟ್ಟಾದ ತಳಿ; ಕಡಿಮೆ ಮೇವಿನಲ್ಲಿ ಬದುಕಬಲ್ಲದು; ಮಲೆನಾಡಿನ ರೈತರು ಸಣ್ಣ ಹಿಂಡುಗಳಲ್ಲಿ ಸಾಕುತ್ತಾರೆ. ಹಾಲಿನ ಪ್ರಮಾಣ ಕಡಿಮೆ.', 'Hardy and well adapted to hilly, forest grazing on little fodder; kept in small herds by Malnad farmers. Low milk yield.'] },
+    bannur: { img: 'assets/sheep.webp', pos: '50% 55%', kind: ['ಕುರಿ · ಸ್ಥಳೀಯ ತಳಿ', 'Sheep · Local breed'], name: ['ಬನ್ನೂರು', 'Bannur'],
+      region: ['ದಕ್ಷಿಣ ಕರ್ನಾಟಕದ ಮಂಡ್ಯ ಮತ್ತು ಮೈಸೂರು ಜಿಲ್ಲೆಗಳು (ಬಂಡೂರು ಅಥವಾ ಮಂಡ್ಯ ಕುರಿ ಎಂದೂ ಕರೆಯುತ್ತಾರೆ)', 'Mandya and Mysuru districts of southern Karnataka (also called Bandur or Mandya sheep)'],
+      look: ['ಮಧ್ಯಮ ಗಾತ್ರದ ಕುರಿ', 'Medium-sized sheep'],
+      known: ['ಮುಖ್ಯವಾಗಿ ಮಾಂಸಕ್ಕಾಗಿ ಸಾಕಲಾಗುತ್ತದೆ; ಅವಳಿ ಮರಿ ಹಾಕುವುದು ತುಲನಾತ್ಮಕವಾಗಿ ಸಾಮಾನ್ಯ ಎಂದು ಹೇಳಲಾಗುತ್ತದೆ.', 'Raised mainly for mutton; twin births are reported to be fairly common.'] }
+  };
+  const breedModal = $('#breedModal');
+  let breedOpen = null, breedFocus = null;
+  function fillBreed() {
+    const b = BREEDS[breedOpen]; if (!b) return; const i = lang === 'kn' ? 0 : 1;
+    $('#breedImg').src = b.img; $('#breedImg').alt = b.name[i]; $('#breedImg').style.objectPosition = b.pos;
+    $('#breedKind').textContent = b.kind[i]; $('#breedTitle').textContent = b.name[i];
+    $('#breedFacts').innerHTML = [[['ಮೂಲ ಪ್ರದೇಶ', 'Home area'], b.region], [['ರೂಪ', 'Appearance'], b.look], [['ವಿಶೇಷತೆ', 'Known for'], b.known]]
+      .map(([k, v]) => `<div><dt>${k[i]}</dt><dd>${v[i]}</dd></div>`).join('');
+  }
+  function openBreed(key) {
+    if (!BREEDS[key]) return; breedOpen = key; breedFocus = document.activeElement; fillBreed();
+    breedModal.classList.remove('hidden'); document.body.style.overflow = 'hidden'; $('#breedClose').focus();
+  }
+  function closeBreed() {
+    if (breedModal.classList.contains('hidden')) return;
+    breedModal.classList.add('hidden'); document.body.style.overflow = ''; breedOpen = null;
+    if (breedFocus && breedFocus.focus) breedFocus.focus();
+  }
+  document.addEventListener('click', e => { const b = e.target.closest('.breed-btn'); if (b) openBreed(b.dataset.breed); });
+  $('#breedClose').addEventListener('click', closeBreed);
+  breedModal.addEventListener('click', e => { if (e.target === breedModal) closeBreed(); });
+  addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeBreed();
+    if (e.key === 'Tab' && !breedModal.classList.contains('hidden')) { // keep focus inside
+      const f = $$('button:not([disabled])', breedModal); if (!f.length) return; e.preventDefault(); f[0].focus();
+    }
+  });
+  rerenderHooks.push(() => { if (breedOpen) fillBreed(); });
+
   /* ---------- Floating "Join the pilot" button (phones only, via CSS) ---------- */
   (function () {
     const fab = $('#fabJoin'), pilot = $('#pilot'), hero = $('.hero');
