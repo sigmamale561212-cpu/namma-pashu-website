@@ -599,3 +599,9 @@ body{overflow-x:clip}
 .service li::before{content:"";position:absolute;left:0;top:.62em;width:8px;height:8px;border-radius:50%;background:var(--orange)}
 .service h3{font-size:18px;line-height:1.4}
 .features-note{margin-top:24px}
+
+/* --- Hero bullet list --- */
+.hero-points{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 24px;width:100%}
+.hero-points li{display:flex;gap:10px;align-items:flex-start;font-size:16px;line-height:1.55;color:var(--ink)}
+.hero-points .icon{flex:none;width:20px;height:20px;margin-top:3px;padding:3px;border-radius:50%;background:var(--sage);color:var(--green)}
+@media (max-width:640px){.hero-points{grid-template-columns:1fr;gap:8px}}
