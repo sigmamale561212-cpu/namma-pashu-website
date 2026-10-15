@@ -85,7 +85,7 @@
   addEventListener('resize', () => { if (innerWidth > 920) setMenu(false); });
 
   /* ---------- Reveal on scroll ---------- */
-  const revealEls = $$('.section-head,.step,.benefit,.service,.about-copy,.breeds,.pilot-form,.faq-item,.stage-legend');
+  const revealEls = $$('.section-head,.step,.benefit,.service,.about-copy,.breeds,.pilot-form,.faq-item,.stage-legend,.founder-card');
   revealEls.forEach(el => el.classList.add('reveal'));
   if ('IntersectionObserver' in window && !reduceMotion) {
     const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('is-visible'); io.unobserve(e.target); } }), { threshold: .12 });
