@@ -605,3 +605,21 @@ body{overflow-x:clip}
 .hero-points li{display:flex;gap:10px;align-items:flex-start;font-size:16px;line-height:1.55;color:var(--ink)}
 .hero-points .icon{flex:none;width:20px;height:20px;margin-top:3px;padding:3px;border-radius:50%;background:var(--sage);color:var(--green)}
 @media (max-width:640px){.hero-points{grid-template-columns:1fr;gap:8px}}
+
+/* --- Hero list: clean, even rows --- */
+.hero-points{align-items:start;grid-auto-rows:minmax(28px,auto);gap:12px 28px}
+.hero-points li{align-items:flex-start;min-width:0}
+.hero-points li span{flex:1;min-width:0;overflow-wrap:anywhere}
+.hero-points .icon{margin-top:2px}
+
+/* --- Phone app preview now shows on mobile too --- */
+@media (max-width:640px){
+  .hero-visual{display:flex;flex-direction:column;align-items:stretch}
+  .phone{display:block;position:relative;right:auto;bottom:auto;width:210px;margin:28px auto 0;text-align:center}
+  .phone figcaption{white-space:normal}
+}
+
+.hero-points{grid-template-columns:repeat(auto-fit,minmax(min(100%,270px),1fr))}
+.hero-points{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media (min-width:921px) and (max-width:1199px){.hero-points{grid-template-columns:1fr}}
+@media (max-width:640px){.hero-points{grid-template-columns:1fr}}
