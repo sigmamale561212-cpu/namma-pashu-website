@@ -55,6 +55,29 @@
   const T = o => o[lang];
   const rerenderHooks = [];
 
+  /* ---------- Conversion events + toast ----------
+     track() sends events to window.dataLayer and a DOM event ("np:event").
+     No analytics provider is loaded and nothing is recorded or sent anywhere until one is connected. */
+  function track(name, params) {
+    try {
+      (window.dataLayer = window.dataLayer || []).push(Object.assign({ event: name, page_lang: lang }, params || {}));
+      document.dispatchEvent(new CustomEvent('np:event', { detail: { name, params: params || {} } }));
+    } catch { /* never break the page for analytics */ }
+  }
+  let toastTimer = null;
+  function toast(msg, kind) {
+    const t = document.getElementById('toast'); if (!t) return;
+    t.textContent = msg; t.className = 'toast is-on' + (kind ? ' toast-' + kind : '');
+    clearTimeout(toastTimer); toastTimer = setTimeout(() => { t.className = 'toast'; }, 3400);
+  }
+  document.addEventListener('click', e => {
+    const wa = e.target.closest('.wa-link'); if (wa) track('whatsapp_click', { place: wa.classList.contains('fab-wa') ? 'floating' : 'page' });
+    const join = e.target.closest('a[href="#pilot"]'); if (join) track('join_pilot_click');
+  });
+  // image skeleton: shimmer until each image has loaded
+  document.addEventListener('load', e => { if (e.target.tagName === 'IMG') e.target.classList.add('is-loaded'); }, true);
+  document.querySelectorAll('img').forEach(i => { if (i.complete) i.classList.add('is-loaded'); });
+
   function setLanguage(next) {
     lang = next;
     document.documentElement.lang = lang;
@@ -68,7 +91,7 @@
     try { const u = new URL(location.href); u.searchParams.set('lang', lang); history.replaceState(null, '', u); } catch { /* ignore */ }
     rerenderHooks.forEach(fn => fn());
   }
-  $$('.lang-switch button').forEach(b => b.addEventListener('click', () => setLanguage(b.dataset.lang)));
+  $$('.lang-switch button').forEach(b => b.addEventListener('click', () => { setLanguage(b.dataset.lang); track('language_change', { to: b.dataset.lang }); }));
 
   /* ---------- Header / mobile menu ---------- */
   const header = $('.site-header');
@@ -130,7 +153,7 @@
       .map(([k, v]) => `<div><dt>${k[i]}</dt><dd>${v[i]}</dd></div>`).join('');
   }
   function openBreed(key) {
-    if (!BREEDS[key]) return; breedOpen = key; breedFocus = document.activeElement; fillBreed();
+    if (!BREEDS[key]) return; track('breed_view', { breed: key }); breedOpen = key; breedFocus = document.activeElement; fillBreed();
     breedModal.classList.remove('hidden'); document.body.style.overflow = 'hidden'; $('#breedClose').focus();
   }
   function closeBreed() {
@@ -205,7 +228,7 @@
     const list = visibleListings();
     grid.innerHTML = list.map((l, i) => `
       <article class="animal-card" style="animation-delay:${i * 60}ms">
-        <div class="animal-photo"><img src="${l.img}" alt="${T(l.name)} — ${lang === 'kn' ? 'ಮಾದರಿ ಚಿತ್ರ' : 'sample image'}" style="object-position:${l.pos}" loading="lazy" width="648" height="370"><span class="sample-badge">${lang === 'kn' ? 'ಮಾದರಿ ಪಟ್ಟಿ' : 'Sample listing'}</span></div>
+        <div class="animal-photo"><img src="${l.img}" alt="${T(l.name)} — ${lang === 'kn' ? 'ಮಾದರಿ ಚಿತ್ರ' : 'sample image'}" style="object-position:${l.pos}" loading="lazy" decoding="async" width="648" height="370"><span class="sample-badge">${lang === 'kn' ? 'ಮಾದರಿ ಪಟ್ಟಿ' : 'Sample listing'}</span></div>
         <div class="animal-info">
           <span class="animal-kind">${T(l.kind)}</span>
           <h3>${T(l.name)}</h3>
@@ -250,6 +273,7 @@
   let lastFocus = null;
   function openModal(id) {
     const l = LISTINGS.find(x => x.id === id); if (!l) return;
+    track('listing_view', { listing: id });
     lastFocus = document.activeElement;
     $('#modalImg').src = l.img; $('#modalImg').alt = T(l.name); $('#modalImg').style.objectPosition = l.pos;
     $('#modalKind').textContent = T(l.kind);
@@ -364,7 +388,7 @@
   }
   status.addEventListener('click', async e => {
     const btn = e.target.closest('#copyDetails'); if (!btn) return;
-    try { await navigator.clipboard.writeText(message); btn.lastChild.textContent = lang === 'kn' ? 'ನಕಲಿಸಲಾಗಿದೆ' : 'Copied'; }
+    try { await navigator.clipboard.writeText(message); btn.lastChild.textContent = lang === 'kn' ? 'ನಕಲಿಸಲಾಗಿದೆ' : 'Copied'; toast(lang === 'kn' ? 'ನಕಲಿಸಲಾಗಿದೆ' : 'Copied to clipboard', 'ok'); }
     catch { btn.lastChild.textContent = lang === 'kn' ? 'ಕೈಯಾರೆ ನಕಲಿಸಿ' : 'Copy manually'; }
   });
   function setLoading(on) { form.classList.toggle('is-loading', on); submitBtn.disabled = on; submitBtn.setAttribute('aria-busy', String(on)); }
@@ -386,12 +410,13 @@
       const ctrl = new AbortController(), t = setTimeout(() => ctrl.abort(), 15000);
       const res = await fetch(ENDPOINT, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(payload), signal: ctrl.signal });
       clearTimeout(t);
-      if (res.ok) { form.reset(); $('#interest').value = 'all'; showReceived(); }
+      if (res.ok) { form.reset(); $('#interest').value = 'all'; showReceived(); track('pilot_submit_success', { role: payload.role, district: payload.district }); toast(lang === 'kn' ? 'ವಿವರಗಳು ಕಳುಹಿಸಲಾಗಿದೆ' : 'Details sent', 'ok'); }
       else if (res.status === 422) {
         const data = await res.json().catch(() => ({})); const f = data.fields || {};
         ['name', 'phone', 'district', 'role', 'consent'].forEach(k => setError(k, !!f[k]));
-      } else showFallback();
-    } catch { showFallback(); }
+        track('pilot_submit_invalid');
+      } else { showFallback(); track('pilot_submit_error'); toast(lang === 'kn' ? 'ಕಳುಹಿಸಲು ಆಗಲಿಲ್ಲ — ಇಮೇಲ್ ಬಳಸಿ' : 'Could not send — please use email', 'err'); }
+    } catch { showFallback(); track('pilot_submit_error'); toast(lang === 'kn' ? 'ಕಳುಹಿಸಲು ಆಗಲಿಲ್ಲ — ಇಮೇಲ್ ಬಳಸಿ' : 'Could not send — please use email', 'err'); }
     finally { setLoading(false); }
   });
 
