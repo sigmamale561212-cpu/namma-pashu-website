@@ -633,3 +633,6 @@ img[loading="lazy"]:not(.is-loaded){background:linear-gradient(90deg,#e8e4d4 25%
 .crumbs{font-size:.9rem;color:var(--ink-2);margin-bottom:12px}.crumbs a{color:var(--green-900);text-decoration:underline}
 .related{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:32px;padding-top:18px;border-top:1px solid rgba(0,0,0,.1)}.related a{color:var(--green-900);text-decoration:underline}
 @media (prefers-reduced-motion:reduce){img[loading="lazy"]:not(.is-loaded){animation:none}.toast{transition:none}}
+.legal ul{padding-left:20px;display:flex;flex-direction:column;gap:10px}
+.legal li em,.legal p em{font-style:normal;color:var(--ink-2);opacity:.85}
+.legal h2{scroll-margin-top:90px}
